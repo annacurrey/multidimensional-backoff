@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 Helper functions for multidimensional backoff LMs and query
-Author: Anna Currey
 
 Created on Mon Apr  6 19:06:14 2015
+Author: Anna Currey
 """
 from __future__ import division
 import sys
