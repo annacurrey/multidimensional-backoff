@@ -26,7 +26,6 @@ Author: Anna Currey
 
 ## TO DO ##
 #  1. infile checking
-#  2. cluster file checking
 
 import argparse
 import sys
