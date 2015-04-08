@@ -27,8 +27,7 @@ Author: Anna Currey
 ## TO DO ##
 #  1. infile checking
 
-import argparse
-import sys
+import argparse, sys, utils
 
 __version__ = '1.1'
 
@@ -51,7 +50,7 @@ def main():
 
 
     ## read the factor files and store them in a dictionary
-    cluster_dict = get_cluster_dict(cluster_name)
+    cluster_dict = utils.get_cluster_dict(cluster_name, CLUSTER_DELIM)
 
 
     ## now go through the infile replace word with cluster
@@ -72,38 +71,6 @@ def main():
                 sys.stdout.write(word + WORD_DELIM)
             # need a new line to separate sentence
             sys.stdout.write(SENT_DELIM)
-
-
-## read in factor file and store it in a dictionary
-# input: name of the file containing the clusters
-# output: dictionary {word:cluster}
-def get_cluster_dict(filename):
-    # dictionary to store factors
-    factor_dict = {}
-    
-    # open the file
-    with open(filename, 'r') as factor_file:
-        # read through line by line
-        for line in factor_file:
-            # split word from factor (line format: word factor)
-            split_line = line.strip().split(CLUSTER_DELIM)
-            
-            # check the file
-            # line should consist only of word and factor!
-            if len(split_line) != 2:
-                sys.stderr.write('Cluster file ' + filename + ' not in correct format\n')
-                sys.stderr.write('Line contains ' + len(split_line) + ' parts\n')
-                sys.exit(1)
-            # word should not appear twice in factor file!
-            if split_line[0] in factor_dict:
-                sys.stderr.write('Cluster file ' + filename + ' not in correct format\n')
-                sys.stderr.write('Word ' + split_line[0] + ' appears more than once\n')
-                sys.exit(2)
-            
-            # add the word and its factor to the dictionary
-            factor_dict[split_line[0]] = split_line[1]
-    
-    return factor_dict
 
 
 ## parsing command-line arguments
