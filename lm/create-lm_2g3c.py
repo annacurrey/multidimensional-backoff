@@ -116,10 +116,10 @@ def main():
     
     ########## 3. calculate backoff probabilities for each ngram ##########
     ## get counts of counts for use in discounting
-    count_unigrams = utils.get_uni_counts(unigrams)
-    count_ww = utils.get_bi_counts(bigrams_ww)
-    count_sw = utils.get_bi_counts(bigrams_sw)
-    count_lw = utils.get_bi_counts(bigrams_lw)
+    count_unigrams = utils.get_counts_uni(unigrams)
+    count_ww = utils.get_counts_bi(bigrams_ww)
+    count_sw = utils.get_counts_bi(bigrams_sw)
+    count_lw = utils.get_counts_bi(bigrams_lw)
 
     # will need vocab size for unigram probs
     vocab_size = len(unigrams)
@@ -154,10 +154,12 @@ def main():
     
     # backoff from small cluster to large cluster
     backoff_sl = utils.calc_backoff_bi(small_to_large, prob_sw, prob_lw)
-    sys.stderr.write('Finished getting s2l backoff dictionary\n')   
+    sys.stderr.write('Finished getting s2l backoff dictionary\n')  
+    ## TO DO some of these (and w2s) are > 1 which shouldn't happen!
     
     # backoff from large cluster to unigram (ignore previous word altogether)
     backoff_l = utils.calc_backoff_uni(large_clusters.keys(), prob_lw, prob_unigrams)
+    #### TO DO Something is wrong here because almost all are -1000!
 
     sys.stderr.write('Finished getting l2u backoff dictionary\n')   
     sys.stderr.write('Finished getting backoff factor dictionaries\n')    

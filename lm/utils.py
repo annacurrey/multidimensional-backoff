@@ -67,6 +67,7 @@ def add_uni_counts(key, dictionary):
 #        probability dictionary of the cluster backing off from
 # output: dictionary mapping word/cluster to backoff weights
 # TO DO later combine with calc_backoff_uni
+# TO DO fix when domain error
 def calc_backoff_bi(p2c_mapping, prev_bigram_counts, curr_bigram_counts):
     # mapping from prev cluster to backoff weights (since curr probs fcn of prev)
     backoff_weights = {}
@@ -88,7 +89,13 @@ def calc_backoff_bi(p2c_mapping, prev_bigram_counts, curr_bigram_counts):
             curr_prob += 10 ** curr_bigram_counts[curr_cluster][word2]
             # now add to dict
             # TO DO need to deal with when it is zero/undefined
-            backoff_weights[prev_cluster] = log(1-prev_prob, 10) - log(1-curr_prob, 10)
+            try:
+                backoff_weights[prev_cluster] = log(1-prev_prob, 10) - log(1-curr_prob, 10)
+            except:
+                try:
+                    backoff_weights[prev_cluster] = log((1-prev_prob)/(1-curr_prob), 10)
+                except:
+                    backoff_weights[prev_cluster] = -1000
     
     return backoff_weights
 
@@ -115,7 +122,13 @@ def calc_backoff_uni(cluster_list, prev_dict, curr_dict):
             curr_prob += 10 ** curr_dict[word2]
         # now add to dict
         # TO DO need to deal with when it is zero/undefined
-        backoff_weights[cluster] = log(1-prev_prob, 10) - log(1-curr_prob, 10)
+        try:
+            backoff_weights[cluster] = log(1-prev_prob, 10) - log(1-curr_prob, 10)
+        except:
+            try:
+                backoff_weights[cluster] = log((1-prev_prob)/(1-curr_prob), 10)
+            except:
+                backoff_weights[cluster] = -1000
     
     return backoff_weights
 
@@ -183,6 +196,37 @@ def get_factor_dict(filename):
             factor_dict[split_line[0]] = split_line[1]
     
     return factor_dict
+
+
+## gets count of counts dictionary for bigrams
+# input: bigram dictionary
+# output: count dictionary {count:number of bigrams with this count}
+# TO DO combine with get_counts_uni
+def get_counts_bi(ngram_dict):
+    # count dict to store counts
+    count_dict = {}
+    # loop through the ngrams
+    for prev_word in ngram_dict:
+        # note dict is {prev_word:{curr_word:count}}
+        for curr_word in ngram_dict[prev_word]:
+            # add the count to the dictionary
+            add_uni_counts(ngram_dict[prev_word][curr_word], count_dict)
+
+    return count_dict
+
+
+## gets count of counts dictionary for unigrams
+# input: unigram dictionary
+# output: count dictionary {count: number of unigrams with this count}
+def get_counts_uni(unigram_dict):
+    # count dict to store counts
+    count_dict = {}
+    # loop through the unigrams
+    for word in unigram_dict:
+        # add the count to the dictionary
+        add_uni_counts(unigram_dict[word], count_dict)
+        
+    return count_dict
 
 
 ## breaks a word-cluster trio into parts (word or cluster)

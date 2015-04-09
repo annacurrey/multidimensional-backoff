@@ -73,8 +73,8 @@ def main():
     
     
     ## read the factor files and store them in a dictionary
-    factor1_dict = utils.get_factor_dict(factor1_name, CLUSTER_DELIM)
-    factor2_dict = utils.get_factor_dict(factor2_name, CLUSTER_DELIM)
+    factor1_dict = utils.get_cluster_dict(factor1_name, CLUSTER_DELIM)
+    factor2_dict = utils.get_cluster_dict(factor2_name, CLUSTER_DELIM)
 
     
     ## now go through the infile and add factors
