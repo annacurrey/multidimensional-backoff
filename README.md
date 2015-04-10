@@ -1,12 +1,12 @@
 # Multidimensional Backoff
-===
+
 Author: Anna Currey  
 Created: March 2015  
 Hosted on: https://github.com/annacurrey/multidimensional-backoff/tree/master/text-process
 
 
 ### Overview
-===
+---
 This project is an implementation of multidimensional backoff for factored language models.
 
 ##### Current status
@@ -21,7 +21,7 @@ There is a script for creating a multidimensional back language model for bigram
 
 
 ### Text processing
-===
+---
 The `text-process` directory contains scripts for converting training and test data into the correct format.
 
 ##### add-factors.py
@@ -72,7 +72,7 @@ Notes: For use in creating the larger set of clusters, if you want to force the 
 
 
 ### Creating the language model
-===
+---
 The program `create-lm_2g3c.py` creates a language model for multidimensional backoff for bigrams with three clusters (including the word itself).
 
 Usage: `./create-lm_2g3c.py training_file > output_file`
@@ -91,5 +91,5 @@ Output file format:
 
 
 ### About multidimensional backoff
-===
+---
 Multidimensional backoff is used adapt factored language models for use with word vectors. For more information on multidimensional backoff, see the paper [here](https://github.com/annacurrey/multidimensional-backoff/blob/master/Currey_multidimensional-backoff.pdf).
