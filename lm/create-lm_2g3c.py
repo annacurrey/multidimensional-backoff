@@ -76,6 +76,9 @@ def main():
     word_to_small = {}
     small_to_large = {}
     
+    # will need total word count for unigram probs
+    total_word_count = 0
+    
     ## the ngram counts come from the training file
     with open(training_filename, 'r') as training_file:
         # read through line by line (one sentence per line)
@@ -85,6 +88,9 @@ def main():
             
             ## loop through the words in the sentence
             for index, word in enumerate(line_words):
+                # increment total word count
+                total_word_count += 1
+                
                 # get the word and its parts
                 word2 = utils.get_part(word, WORD_LABEL)
                 small2 = utils.get_part(word, SMALL_LABEL)
@@ -112,7 +118,6 @@ def main():
                     utils.add_bi_counts(large1, word2, bigrams_lw)
     
     sys.stderr.write('Finished getting ngram count dictionaries\n')    
-
     
     ########## 3. calculate backoff probabilities for each ngram ##########
     ## get counts of counts for use in discounting
@@ -121,7 +126,7 @@ def main():
     count_sw = utils.get_counts_bi(bigrams_sw)
     count_lw = utils.get_counts_bi(bigrams_lw)
 
-    # will need vocab size for unigram probs
+    # will need vocab size for unk probs
     vocab_size = len(unigrams)
     sys.stderr.write('Finished getting counts of counts\n')    
     
@@ -135,7 +140,7 @@ def main():
     
     ## calculate log probability of each unigram and bigram
     # dictionaries to store probabilities
-    prob_unigrams = utils.probs_uni(unigrams, vocab_size, disc_uni)
+    prob_unigrams = utils.probs_uni(unigrams, total_word_count, disc_uni)
     prob_ww = utils.probs_bi(bigrams_ww, unigrams, disc_ww)
     prob_sw = utils.probs_bi(bigrams_sw, small_clusters, disc_sw)
     prob_lw = utils.probs_bi(bigrams_lw, large_clusters, disc_lw)
@@ -146,7 +151,6 @@ def main():
 
     sys.stderr.write('Finished getting probability dictionaries\n')    
 
-    
     ########## 4. calculate backoff (alpha) of each backoff step ##########
     # backoff from word to small cluster
     backoff_ws = utils.calc_backoff_bi(word_to_small, prob_ww, prob_sw)
@@ -158,7 +162,7 @@ def main():
     ## TO DO some of these (and w2s) are > 1 which shouldn't happen!
     
     # backoff from large cluster to unigram (ignore previous word altogether)
-    backoff_l = utils.calc_backoff_uni(large_clusters.keys(), prob_lw, prob_unigrams)
+    backoff_l = utils.calc_backoff_uni(prob_lw, prob_unigrams)
     #### TO DO Something is wrong here because almost all are -1000!
 
     sys.stderr.write('Finished getting l2u backoff dictionary\n')   

@@ -106,7 +106,7 @@ def calc_backoff_bi(p2c_mapping, prev_bigram_counts, curr_bigram_counts):
 #        probability dictionary of the cluster backing off from (long cluster)
 # output: dictionary mapping large cluster to backoff weights
 # TO DO maybe combine this with calc_backoff_bi
-def calc_backoff_uni(cluster_list, prev_dict, curr_dict):
+def calc_backoff_uni(prev_dict, curr_dict):
     # map from large cluster to backoff weights
     backoff_weights = {}
     # for each large cluster
@@ -273,7 +273,7 @@ def probs_bi(bigram_counts, normalizer, disc_dict):
 ## calculats unigram probabilities from a unigram count dictionary
 # input: unigram count dict, vocab size (for normalization), discount dict
 # output: probability dict ({word:prob})
-def probs_uni(unigram_counts, vocab_size, disc_dict):
+def probs_uni(unigram_counts, word_count, disc_dict):
     # dictionary to store unigram counts {word:probability}
     prob_dict = {}
     # want a probability for each word in the dict
@@ -281,7 +281,7 @@ def probs_uni(unigram_counts, vocab_size, disc_dict):
         # get log disc
         disc = disc_dict[unigram_counts[word]]
         # get log max likelihood
-        ml = calc_max_likely(unigram_counts[word], vocab_size)
+        ml = calc_max_likely(unigram_counts[word], word_count)
         # prob = d*max likely; add to disc
         prob_dict[word] = disc + ml
     
